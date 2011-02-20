@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<title>RTMFP Bridge</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	
+	<!-- External libs -->
+	<script src="Ext/swfobject.js" type="text/javascript"></script>
+	<script src="Ext/json.js" type="text/javascript"></script>
+	<script src="Ext/JS.js" type="text/javascript"></script>
+	
+	<!-- Internal libs -->
+	<script src="Flash/Utilities.js" type="text/javascript"></script>
+	<script src="Flash/RTMFP.js" type="text/javascript"></script>
+	
+	<script type="text/javascript">
+		window.onload = function () {
+			var RTMFP = JS.include("Flash.RTMFP");
+			
+			var connection = RTMFP("rtmfp://stratus.adobe.com/6ecefef13b73d3210ce8fb75-9dacf6e65e4a");
+			
+			connection.ready(function () {
+				document.getElementById("debug").innerHTML += "Connection is ready !<br />";
+				document.getElementById("debug").innerHTML += "My id is : " + connection.id() + "<br/>";
+			});
+			
+			connection.messageReceive(function (peerID, message) {
+				document.getElementById("debug").innerHTML += peerID + ": " + message + "<br />";
+			});
+			
+			connection.peerConnect(function (peerID) {
+				document.getElementById("debug").innerHTML += peerID + " connected.<br />";
+			});
+			
+			document.getElementById("btnConnect").onclick = function () {
+				connection.addPeer(document.getElementById("peerID").value);
+			};
+			
+			document.getElementById("btnSend").onclick = function () {
+				connection.send(document.getElementById("message").value);
+			};
+		};
+	</script>
+	<style type="text/css">
+		html, body { height:100%; overflow:hidden; }
+		body { margin:0; }
+	</style>
+</head>
+<body>
+	<input type="text" id="peerID" />
+	<input type="button" id="btnConnect" value="Connect" />
+	<br/>
+	<input type="text" id="message" />
+	<input type="button" id="btnSend" value="Send" />
+	<br/>
+	<div id="debug"></div>
+</body>
+</html>
