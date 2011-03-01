@@ -28,7 +28,7 @@
 			document.body.appendChild(RTMFPContainer);
 			
 			swfobject.embedSWF(
-				"http://192.168.0.107/RTMPBridge.swf", "RTMFPContainer", "0px", "0px", "10.0.0", 
+				"RTMPBridge.swf", "RTMFPContainer", "0px", "0px", "10.0.0", 
 				"expressInstall.swf", {}, {}, { id : "RTMFPBridge" },
 				function (result) {
 					_isSupported = result.success;
