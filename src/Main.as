@@ -33,7 +33,7 @@ package
 		}
 		
 		private function init(e:Event = null):void {
-			Main.log("RTMP Bridge v0.0.1.4");
+			Main.log("RTMP Bridge v0.0.1.6");
 			
 			var self:Main = this;
 			
@@ -69,7 +69,7 @@ package
 			if (peers[farID] == undefined) {
 				peers[farID] = new Peer(farID, nc, function (peerID:String, msg:String):void {
 					if (self.onMessageCallback != null) {
-						ExternalInterface.call(self.onMessageCallback, peerID, msg);
+						ExternalInterface.call(self.onMessageCallback, Main.flashSucks(peerID), Main.flashSucks(msg));
 					}
 				});
 			}
@@ -114,7 +114,7 @@ package
 			var sendStreamClient:Object = new Object();
 			sendStreamClient.onPeerConnect = function(callerns:NetStream):Boolean {
 				Main.log("(AS) Receive connection from " + callerns.farID);
-				ExternalInterface.call(callback, callerns.farID);
+				ExternalInterface.call(callback, Main.flashSucks(callerns.farID));
 				
 				var delay:Timer = new Timer(10, 1);
 				delay.addEventListener(TimerEvent.TIMER, function ():void {
@@ -135,8 +135,15 @@ package
 		
 		public static function log (message:String):void {
 			if (Main.IS_DEBUG) {
-				ExternalInterface.call("console.log", message);
+				ExternalInterface.call("console.log", Main.flashSucks((message)));
 			}
+		}
+		
+		public static function flashSucks (data:String):String {
+			return data.split("%").join("%25")
+					   .split("\\").join("%5c")
+					   .split("\"").join("%22")
+					   .split("&").join("%26");
 		}
 	}
 	

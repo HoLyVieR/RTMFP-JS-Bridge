@@ -66,6 +66,14 @@
 		}
 		
 		function messageReceive(peerID, message) {
+			// Ugly hack because Flash can't handle \, " and & //
+			// Ya, that's how bad ExternalInterface is //
+			// Using eval to escape string ... WOW ... who had that horrible idea //
+			message = message.replace(/%22/g, "\"")
+						   .replace(/%5c/g, "\\")
+						   .replace(/%26/g, "&")
+						   .replace(/%25/g, "%");
+			
 			_onMessageReceive(peerID, JSON.parse(message));
 		}
 		
