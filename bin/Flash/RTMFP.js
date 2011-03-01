@@ -9,11 +9,13 @@
 		
 		var _bridge;
 		var _peerPool = {};
+		var _isSupported;
 		
 		// Event callback //
 		var _onInit = function () {};
 		var _onPeerConnect = function () {};
 		var _onMessageReceive = function () {};
+		var _onError = function () {};
 		
 		// Private //
 		
@@ -26,19 +28,25 @@
 			document.body.appendChild(RTMFPContainer);
 			
 			swfobject.embedSWF(
-				"RTMPBridge.swf", "RTMFPContainer", "0px", "0px", "10.0.0", 
-				"expressInstall.swf", {}, {}, { id : "RTMFPBridge" });
-				
-			_bridge = document.getElementById("RTMFPBridge");
-			
-			waitForSWF();
+				"http://192.168.0.107/RTMPBridge.swf", "RTMFPContainer", "0px", "0px", "10.0.0", 
+				"expressInstall.swf", {}, {}, { id : "RTMFPBridge" },
+				function (result) {
+					_isSupported = result.success;
+					
+					if (result.success) {
+						_bridge = document.getElementById("RTMFPBridge");
+						waitForSWF();
+					} else {
+						_onError();
+					}
+				});
 		}
 		
 		function waitForSWF () {
-			if (!_bridge.init) {
+			if (!_bridge.onInit) {
 				setTimeout(function () {
-					waitForSWF();
-				}, 1000);
+					waitForSWF ();
+				}, 200);
 			} else {
 				swfLoaded();
 			}
@@ -106,6 +114,14 @@
 			_onPeerConnect = fnct;
 		}
 		
+		// public function error (function () { ... }) : void //
+		self.error = function (fnct) {
+			if (typeof fnct != "function") {
+				throw new TypeError("Parameter must be a function.");
+			}
+			
+			_onError = fnct;
+		}
 		
 		// public function addPeer(peerID : String) : void //
 		self.addPeer = function (peerID) {
@@ -131,8 +147,15 @@
 			_bridge.broadcast(JSON.stringify(data));
 		}
 		
-		// Initialise the component //
-		initSWF();
+		// public function support () : boolean //
+		self.support = function () {
+			return !!_isSupported;
+		}
+		
+		// public function init () : void //
+		self.init = function () {
+			initSWF();
+		};
 		
 		return self;
 	};
