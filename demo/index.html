@@ -32,29 +32,54 @@
 				document.getElementById("debug").innerHTML += peerID + " connected.<br />";
 			});
 			
+			connection.peerDisconnect(function (peerID) {
+				document.getElementById("debug").innerHTML += peerID + " disconnected.<br />";
+			});
+			
 			document.getElementById("btnConnect").onclick = function () {
 				connection.addPeer(document.getElementById("peerID").value);
 			};
 			
+			document.getElementById("btnDisconnect").onclick = function () {
+				connection.disconnectPeer(document.getElementById("peerID2").value);
+			};
+			
+			document.getElementById("btnClose").onclick = function () {
+				connection.disconnect();
+			};
+			
 			document.getElementById("btnSend").onclick = function () {
-				connection.send(document.getElementById("message").value);
+				var value = document.getElementById("message").value;
+				var to = document.getElementById("to").value;
+				
+				if (to && to.toLowerCase() != "all") {
+					connection.sendTo(to, value);
+				} else {
+					connection.send(value);
+				}
 			};
 			
 			connection.init();
 		};
 	</script>
-	<style type="text/css">
-		html, body { height:100%; overflow:hidden; }
-		body { margin:0; }
-	</style>
 </head>
 <body>
-	<input type="text" id="peerID" />
-	<input type="button" id="btnConnect" value="Connect" />
+	Peer ID : <input type="text" id="peerID" />
+	<input type="button" id="btnConnect" value="Connect peer" />
 	<br/>
-	<input type="text" id="message" />
+	
+	Message : <input type="text" id="message" />
+	To (optional, default is all) : <input type="text" id="to" />
 	<input type="button" id="btnSend" value="Send" />
 	<br/>
+	
+	Peer ID : <input type="text" id="peerID2" />
+	<input type="button" id="btnDisconnect" value="Disconnect peer" />
+	<br/>
+	
+	<input type="button" id="btnClose" value="End connection" />
+	<br/>
+	
 	<div id="debug"></div>
 </body>
 </html>
