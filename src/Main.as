@@ -35,7 +35,7 @@ package
 		
 		// Initialize the function that we can use from Javascript //
 		private function init(e:Event = null):void {
-			Main.log("RTMP Bridge v0.0.1.16");
+			Main.log("RTMP Bridge v0.0.1.17");
 			
 			var self:Main = this;
 			
@@ -101,6 +101,7 @@ package
 					peer.close(); // Close the send stream //
 					peers[peerID].close(); // Close the receive stream //
 					delete peers[peerID];
+					peer.send("receiveMessage", ""); //
 					break;
 				}
 			}
